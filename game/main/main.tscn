@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://cgyy828jxbkn6"]
+[gd_scene load_steps=6 format=3 uid="uid://cgyy828jxbkn6"]
 
 [ext_resource type="Texture2D" uid="uid://dxfjy7pmnt728" path="res://assets/textures/deltarune_scroll.png" id="1_53q0u"]
 [ext_resource type="Script" uid="uid://cvfkn53jp7lrp" path="res://main/main.gd" id="1_pjrb6"]
 [ext_resource type="PackedScene" uid="uid://d3u0niojn13wa" path="res://room/room.tscn" id="3_xwkvk"]
 [ext_resource type="PackedScene" uid="uid://ci0dg3ggwnbol" path="res://player/player.tscn" id="4_c651c"]
+[ext_resource type="Script" uid="uid://cqgsr0y0jfu05" path="res://main/room_handler.gd" id="5_3wy1v"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_pjrb6")
@@ -45,3 +46,6 @@ position = Vector2(128, 128)
 
 [node name="Player" parent="." instance=ExtResource("4_c651c")]
 position = Vector2(128, 128)
+
+[node name="RoomHandler" type="Node2D" parent="."]
+script = ExtResource("5_3wy1v")
