@@ -1,0 +1,65 @@
+[gd_scene load_steps=11 format=3 uid="uid://jsog86tsfybj"]
+
+[ext_resource type="Texture2D" uid="uid://is5xknpw2ys6" path="res://assets/textures/light_bullet_turned.png" id="1_8mtqj"]
+[ext_resource type="Script" uid="uid://cfw0va3o5kpq6" path="res://room/door/room_door.gd" id="1_67sup"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5ikvo"]
+size = Vector2(12, 48)
+
+[sub_resource type="Gradient" id="Gradient_8mtqj"]
+offsets = PackedFloat32Array(0.00645161, 1)
+colors = PackedColorArray(0.374139, 0.374139, 0.374139, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_67sup"]
+gradient = SubResource("Gradient_8mtqj")
+
+[sub_resource type="Curve" id="Curve_67sup"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_ns4w2"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.237569, 1), 0.0, 0.0, 0, 0, Vector2(0.740332, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="Curve" id="Curve_8acou"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveXYZTexture" id="CurveXYZTexture_56vmh"]
+curve_x = SubResource("Curve_67sup")
+curve_y = SubResource("Curve_ns4w2")
+curve_z = SubResource("Curve_8acou")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_67sup"]
+lifetime_randomness = 0.3
+particle_flag_align_y = true
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(0, 16, 1)
+spread = 0.0
+initial_velocity_min = 140.0
+initial_velocity_max = 200.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.4
+scale_curve = SubResource("CurveXYZTexture_56vmh")
+color = Color(0, 1, 0, 1)
+color_initial_ramp = SubResource("GradientTexture1D_67sup")
+
+[node name="RoomDoor" type="Area2D"]
+script = ExtResource("1_67sup")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(24, 0)
+shape = SubResource("RectangleShape2D_5ikvo")
+
+[node name="Suck" type="GPUParticles2D" parent="."]
+position = Vector2(18, 0)
+amount = 20
+texture = ExtResource("1_8mtqj")
+lifetime = 0.4
+process_material = SubResource("ParticleProcessMaterial_67sup")
+
+[node name="Line2D" type="Line2D" parent="."]
+points = PackedVector2Array(20, -16, 20, 16)
+width = 4.0
+default_color = Color(0, 1, 0, 1)

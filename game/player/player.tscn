@@ -1,0 +1,58 @@
+[gd_scene load_steps=14 format=3 uid="uid://ci0dg3ggwnbol"]
+
+[ext_resource type="Script" uid="uid://dj0wux1payrk1" path="res://player/player.gd" id="1_boad6"]
+[ext_resource type="PackedScene" uid="uid://b0h3spmyp72xm" path="res://components/shadow/shadow.tscn" id="1_qjkh3"]
+[ext_resource type="Shader" uid="uid://dvmhsfr2t0ss2" path="res://components/shadow/shadow.gdshader" id="2_g6k8r"]
+[ext_resource type="Script" uid="uid://4lio7mq7v2gj" path="res://components/states/state_machine.gd" id="2_rgyib"]
+[ext_resource type="Texture2D" uid="uid://cprc86drqqgy4" path="res://assets/textures/player.png" id="3_boad6"]
+[ext_resource type="Script" uid="uid://c0o4k2lwilfbp" path="res://player/states/idle.gd" id="3_hg6s5"]
+[ext_resource type="Script" uid="uid://di6oy84ucx8do" path="res://player/states/move.gd" id="4_8t03j"]
+[ext_resource type="PackedScene" uid="uid://ck7giesvc1amw" path="res://components/height_sprite/height_sprite.tscn" id="4_rgyib"]
+[ext_resource type="Shader" uid="uid://coxwfjo7lomsr" path="res://components/flash.gdshader" id="5_hg6s5"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_qjkh3"]
+bounce = 0.25
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8t03j"]
+resource_local_to_scene = true
+shader = ExtResource("2_g6k8r")
+shader_parameter/color = Color(0, 0, 0, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2ieo8"]
+resource_local_to_scene = true
+shader = ExtResource("5_hg6s5")
+shader_parameter/active = false
+shader_parameter/tint = Color(1, 0, 0, 1)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_qjkh3"]
+radius = 5.0
+
+[node name="Player" type="RigidBody2D"]
+physics_material_override = SubResource("PhysicsMaterial_qjkh3")
+gravity_scale = 0.0
+lock_rotation = true
+linear_damp = 2.5
+angular_damp = 2.5
+script = ExtResource("1_boad6")
+
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
+script = ExtResource("2_rgyib")
+initial_state = NodePath("Idle")
+metadata/_custom_type_script = "uid://4lio7mq7v2gj"
+
+[node name="Idle" type="Node" parent="StateMachine"]
+script = ExtResource("3_hg6s5")
+
+[node name="Move" type="Node" parent="StateMachine"]
+script = ExtResource("4_8t03j")
+
+[node name="Shadow" parent="." instance=ExtResource("1_qjkh3")]
+material = SubResource("ShaderMaterial_8t03j")
+texture = ExtResource("3_boad6")
+
+[node name="HeightSprite" parent="." instance=ExtResource("4_rgyib")]
+material = SubResource("ShaderMaterial_2ieo8")
+texture = ExtResource("3_boad6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_qjkh3")

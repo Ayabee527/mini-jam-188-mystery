@@ -1,0 +1,47 @@
+[gd_scene load_steps=5 format=3 uid="uid://cgyy828jxbkn6"]
+
+[ext_resource type="Texture2D" uid="uid://dxfjy7pmnt728" path="res://assets/textures/deltarune_scroll.png" id="1_53q0u"]
+[ext_resource type="Script" uid="uid://cvfkn53jp7lrp" path="res://main/main.gd" id="1_pjrb6"]
+[ext_resource type="PackedScene" uid="uid://d3u0niojn13wa" path="res://room/room.tscn" id="3_xwkvk"]
+[ext_resource type="PackedScene" uid="uid://ci0dg3ggwnbol" path="res://player/player.tscn" id="4_c651c"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_pjrb6")
+
+[node name="BG" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="BG" type="ColorRect" parent="BG"]
+custom_minimum_size = Vector2(256, 256)
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0, 0, 0, 1)
+
+[node name="Scroll2" type="Parallax2D" parent="BG/BG"]
+scroll_offset = Vector2(-14, -7)
+repeat_size = Vector2(64, 64)
+autoscroll = Vector2(-8, -8)
+repeat_times = 6
+
+[node name="Scroll" type="Sprite2D" parent="BG/BG/Scroll2"]
+modulate = Color(0.131172, 0.331869, 0, 1)
+position = Vector2(128, 128)
+texture = ExtResource("1_53q0u")
+
+[node name="Scroll1" type="Parallax2D" parent="BG/BG"]
+repeat_size = Vector2(64, 64)
+autoscroll = Vector2(12, 12)
+repeat_times = 6
+
+[node name="Scroll" type="Sprite2D" parent="BG/BG/Scroll1"]
+modulate = Color(0, 0.800176, 0.213983, 1)
+position = Vector2(128, 128)
+texture = ExtResource("1_53q0u")
+
+[node name="Marker2D" type="Marker2D" parent="."]
+position = Vector2(128, 128)
+
+[node name="Room" parent="." instance=ExtResource("3_xwkvk")]
+
+[node name="Player" parent="." instance=ExtResource("4_c651c")]
+position = Vector2(128, 128)
