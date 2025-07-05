@@ -99,7 +99,8 @@ func shoot() -> void:
 			#attack.rotation = 0
 			add_child.call_deferred(attack)
 		else:
-			owner.get_parent().add_child.call_deferred(attack)
+			#owner.get_parent().add_child.call_deferred(attack)
+			get_tree().current_scene.add_child.call_deferred(attack)
 	
 	sound.stream = weapon.attack_data.sound
 	sound.play()

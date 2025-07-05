@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://ci0dg3ggwnbol"]
+[gd_scene load_steps=21 format=3 uid="uid://ci0dg3ggwnbol"]
 
 [ext_resource type="Script" uid="uid://dj0wux1payrk1" path="res://player/player.gd" id="1_boad6"]
 [ext_resource type="PackedScene" uid="uid://b0h3spmyp72xm" path="res://components/shadow/shadow.tscn" id="1_qjkh3"]
@@ -9,6 +9,11 @@
 [ext_resource type="Script" uid="uid://di6oy84ucx8do" path="res://player/states/move.gd" id="4_8t03j"]
 [ext_resource type="PackedScene" uid="uid://ck7giesvc1amw" path="res://components/height_sprite/height_sprite.tscn" id="4_rgyib"]
 [ext_resource type="Shader" uid="uid://coxwfjo7lomsr" path="res://components/flash.gdshader" id="5_hg6s5"]
+[ext_resource type="PackedScene" uid="uid://b1lcu4cgm3hjd" path="res://components/weapon/weapon_handler.tscn" id="10_8t03j"]
+[ext_resource type="Script" uid="uid://chdopctyw2ff3" path="res://components/weapon/collision_data/collision_data.gd" id="11_2ieo8"]
+[ext_resource type="Script" uid="uid://dhaneakaic7dm" path="res://components/weapon/weapon.gd" id="12_yllr7"]
+[ext_resource type="Resource" uid="uid://c4pga0kw2s831" path="res://player/player_weapon.tres" id="13_kb6p2"]
+[ext_resource type="PackedScene" uid="uid://dvvktbgt1ayca" path="res://components/hurtbox/hurtbox.tscn" id="14_kb6p2"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_qjkh3"]
 bounce = 1.0
@@ -27,7 +32,16 @@ shader_parameter/tint = Color(1, 0, 0, 1)
 [sub_resource type="CircleShape2D" id="CircleShape2D_qjkh3"]
 radius = 5.0
 
-[node name="Player" type="RigidBody2D" groups=["player"]]
+[sub_resource type="Resource" id="Resource_ebec5"]
+script = ExtResource("11_2ieo8")
+collision_layer = 16
+collision_mask = 8
+metadata/_custom_type_script = "uid://chdopctyw2ff3"
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_wodsf"]
+radius = 5.0
+
+[node name="Player" type="RigidBody2D" node_paths=PackedStringArray("weapon") groups=["player"]]
 collision_layer = 6
 physics_material_override = SubResource("PhysicsMaterial_qjkh3")
 gravity_scale = 0.0
@@ -35,6 +49,7 @@ lock_rotation = true
 linear_damp = 2.5
 angular_damp = 2.5
 script = ExtResource("1_boad6")
+weapon = NodePath("WeaponHandler")
 
 [node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
 script = ExtResource("2_rgyib")
@@ -47,9 +62,10 @@ script = ExtResource("3_hg6s5")
 [node name="Move" type="Node" parent="StateMachine"]
 script = ExtResource("4_8t03j")
 
-[node name="Shadow" parent="." instance=ExtResource("1_qjkh3")]
+[node name="Shadow" parent="." node_paths=PackedStringArray("caster") instance=ExtResource("1_qjkh3")]
 material = SubResource("ShaderMaterial_8t03j")
 texture = ExtResource("3_boad6")
+caster = NodePath("../HeightSprite")
 
 [node name="HeightSprite" parent="." instance=ExtResource("4_rgyib")]
 material = SubResource("ShaderMaterial_2ieo8")
@@ -57,3 +73,17 @@ texture = ExtResource("3_boad6")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_qjkh3")
+
+[node name="WeaponHandler" parent="." instance=ExtResource("10_8t03j")]
+collision_data = SubResource("Resource_ebec5")
+weapons = Array[ExtResource("12_yllr7")]([ExtResource("13_kb6p2")])
+
+[node name="Hurtbox" parent="." instance=ExtResource("14_kb6p2")]
+collision_layer = 4
+collision_mask = 96
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("CircleShape2D_wodsf")
+
+[connection signal="hurt" from="Hurtbox" to="." method="_on_hurtbox_hurt"]
+[connection signal="knocked_back" from="Hurtbox" to="." method="_on_hurtbox_knocked_back"]

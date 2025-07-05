@@ -15,9 +15,12 @@ enum RoomType {
 @export var r_door: RoomDoor
 @export var u_door: RoomDoor
 @export var d_door: RoomDoor
+@export var enemy_handler: RoomEnemyHandler
 
 var connections: Array[Vector2i] = []
 var type: RoomType = RoomType.COMBAT
+
+var beaten: bool = false
 
 func _ready() -> void:
 	initialize()
@@ -42,7 +45,16 @@ func open_doors() -> void:
 func _on_trigger_body_entered(body: Node2D) -> void:
 	MainCam.target = cam_holder
 	
-	if type == RoomType.COMBAT:
+	if type == RoomType.COMBAT and not beaten:
 		await get_tree().create_timer(0.2, false).timeout
-		MainCam.shake(14, 8, 7)
+		MainCam.shake(20, 8, 7)
 		close_all_doors()
+		await get_tree().create_timer(0.4, false).timeout
+		enemy_handler.spawn_wave(Global.difficulty)
+
+
+func _on_enemy_handler_wave_cleared() -> void:
+	MainCam.shake(20, 8, 7)
+	open_doors()
+	Global.difficulty += 1
+	beaten = true

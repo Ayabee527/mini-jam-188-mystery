@@ -18,7 +18,7 @@ func set_open(new_open: bool) -> void:
 func open_door() -> void:
 	var tween = create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_EXPO)
 	tween.tween_property(
-		line, "scale:y", 1.0, 0.3
+		line, "scale:y", 1.0, 0.7
 	)
 	await tween.finished
 	suck.emitting = true
@@ -29,7 +29,7 @@ func close_door() -> void:
 	coll_shape.set_deferred("disabled", true)
 	var tween = create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_EXPO)
 	tween.tween_property(
-		line, "scale:y", 0.0, 0.3
+		line, "scale:y", 0.0, 0.7
 	)
 
 

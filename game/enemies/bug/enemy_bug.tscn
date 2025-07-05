@@ -1,0 +1,170 @@
+[gd_scene load_steps=26 format=3 uid="uid://bobf4k7bh1iyg"]
+
+[ext_resource type="Script" uid="uid://broy3v2stol0h" path="res://enemies/bug/enemy_bug.gd" id="1_2ry7h"]
+[ext_resource type="Script" uid="uid://crlp86gtb4uuw" path="res://components/health/health.gd" id="2_a4xbe"]
+[ext_resource type="PackedScene" uid="uid://bw8338ilrtcwc" path="res://components/trail/trail.tscn" id="2_go0d6"]
+[ext_resource type="Script" uid="uid://4lio7mq7v2gj" path="res://components/states/state_machine.gd" id="2_u8cwc"]
+[ext_resource type="Script" uid="uid://3fmtko84fo5h" path="res://enemies/bug/states/ram.gd" id="3_t0pbx"]
+[ext_resource type="Script" uid="uid://dkoo53uvuodts" path="res://enemies/bug/states/die.gd" id="4_a4xbe"]
+[ext_resource type="Script" uid="uid://chdopctyw2ff3" path="res://components/weapon/collision_data/collision_data.gd" id="5_j4l0o"]
+[ext_resource type="Script" uid="uid://dhaneakaic7dm" path="res://components/weapon/weapon.gd" id="6_unbbi"]
+[ext_resource type="Resource" uid="uid://bbkmbgvi10sk8" path="res://enemies/bug/bug_boom.tres" id="7_fdri0"]
+[ext_resource type="PackedScene" uid="uid://dvvktbgt1ayca" path="res://components/hurtbox/hurtbox.tscn" id="8_unbbi"]
+[ext_resource type="PackedScene" uid="uid://b1lcu4cgm3hjd" path="res://components/weapon/weapon_handler.tscn" id="9_a4xbe"]
+[ext_resource type="PackedScene" uid="uid://bd83v7x2q3o7f" path="res://components/hitbox/hitbox.tscn" id="9_fdri0"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_260km"]
+bounce = 1.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_260km"]
+radius = 8.0
+
+[sub_resource type="Animation" id="Animation_2ry7h"]
+resource_name = "speen"
+length = 2.0
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 6.28319]
+}
+
+[sub_resource type="Animation" id="Animation_go0d6"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ll76g"]
+_data = {
+&"RESET": SubResource("Animation_go0d6"),
+&"speen": SubResource("Animation_2ry7h")
+}
+
+[sub_resource type="Gradient" id="Gradient_260km"]
+colors = PackedColorArray(0.355314, 0.355314, 0.355314, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_2ry7h"]
+gradient = SubResource("Gradient_260km")
+
+[sub_resource type="Curve" id="Curve_go0d6"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_ll76g"]
+curve = SubResource("Curve_go0d6")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_u8cwc"]
+particle_flag_disable_z = true
+emission_shape = 2
+emission_sphere_radius = 16.0
+angle_min = -720.0
+angle_max = 720.0
+gravity = Vector3(0, 0, 0)
+radial_accel_min = -100.0
+radial_accel_max = -100.0
+scale_max = 4.0
+scale_curve = SubResource("CurveTexture_ll76g")
+color = Color(0, 1, 0, 1)
+color_initial_ramp = SubResource("GradientTexture1D_2ry7h")
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_fdri0"]
+radius = 12.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_v6pb7"]
+radius = 7.0
+
+[sub_resource type="Resource" id="Resource_yl5bf"]
+script = ExtResource("5_j4l0o")
+collision_layer = 32
+collision_mask = 4
+metadata/_custom_type_script = "uid://chdopctyw2ff3"
+
+[node name="EnemyBug" type="RigidBody2D" node_paths=PackedStringArray("health") groups=["enemies"]]
+collision_layer = 10
+physics_material_override = SubResource("PhysicsMaterial_260km")
+gravity_scale = 0.0
+lock_rotation = true
+contact_monitor = true
+max_contacts_reported = 4
+linear_damp = 2.0
+script = ExtResource("1_2ry7h")
+health = NodePath("Health")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("2_a4xbe")
+metadata/_custom_type_script = "uid://crlp86gtb4uuw"
+
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
+script = ExtResource("2_u8cwc")
+initial_state = NodePath("Ram")
+metadata/_custom_type_script = "uid://4lio7mq7v2gj"
+
+[node name="Ram" type="Node" parent="StateMachine" node_paths=PackedStringArray("stun_timer", "weapon")]
+script = ExtResource("3_t0pbx")
+stun_timer = NodePath("StunTimer")
+weapon = NodePath("../../WeaponHandler")
+
+[node name="StunTimer" type="Timer" parent="StateMachine/Ram"]
+one_shot = true
+
+[node name="Die" type="Node" parent="StateMachine"]
+script = ExtResource("4_a4xbe")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_260km")
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+color = Color(0, 1, 0, 1)
+polygon = PackedVector2Array(6, 3, 6, -3, 1, -1, 3, -6, -3, -6, -1, -1, -6, -3, -6, 3, -1, 1, -4, 6, 3, 6, 1, 1)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Polygon2D"]
+libraries = {
+&"": SubResource("AnimationLibrary_ll76g")
+}
+autoplay = "speen"
+
+[node name="Trail" parent="Polygon2D" instance=ExtResource("2_go0d6")]
+default_color = Color(0, 1, 0, 1)
+
+[node name="Bugs" type="GPUParticles2D" parent="."]
+amount = 80
+process_material = SubResource("ParticleProcessMaterial_u8cwc")
+
+[node name="Hurtbox" parent="." instance=ExtResource("8_unbbi")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("CircleShape2D_fdri0")
+
+[node name="Hitbox" parent="." instance=ExtResource("9_fdri0")]
+knockback_strength = 84.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("CircleShape2D_v6pb7")
+
+[node name="WeaponHandler" parent="." instance=ExtResource("9_a4xbe")]
+muzzle_distance = 0.0
+collision_data = SubResource("Resource_yl5bf")
+weapons = Array[ExtResource("6_unbbi")]([ExtResource("7_fdri0")])
+
+[connection signal="body_entered" from="." to="StateMachine/Ram" method="_on_enemy_bug_body_entered"]
+[connection signal="has_died" from="Health" to="StateMachine/Die" method="_on_health_has_died"]
+[connection signal="hurt" from="Hurtbox" to="." method="_on_hurtbox_hurt"]
+[connection signal="knocked_back" from="Hurtbox" to="." method="_on_hurtbox_knocked_back"]

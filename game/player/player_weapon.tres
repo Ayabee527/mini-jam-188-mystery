@@ -1,0 +1,64 @@
+[gd_resource type="Resource" script_class="Weapon" load_steps=9 format=3 uid="uid://c4pga0kw2s831"]
+
+[ext_resource type="Script" uid="uid://dh4o07tkvqsri" path="res://components/weapon/attack_data/hitbox_data/hitbox_data.gd" id="1_71opt"]
+[ext_resource type="Script" uid="uid://dhaneakaic7dm" path="res://components/weapon/weapon.gd" id="1_jsb18"]
+[ext_resource type="Script" uid="uid://chaqmjsk5oj0x" path="res://components/weapon/attack_data/projectile_data.gd" id="2_ftes0"]
+[ext_resource type="AudioStream" uid="uid://cgtlfjdxgp4lp" path="res://assets/sounds/shot.wav" id="3_w11if"]
+[ext_resource type="Texture2D" uid="uid://j5byvbou43o0" path="res://assets/textures/light_bullet.png" id="4_74u6o"]
+
+[sub_resource type="Resource" id="Resource_71opt"]
+script = ExtResource("1_71opt")
+damage = 1
+trigger_invinc = false
+damage_cooldown = 0.5
+knockback_strength = 32.0
+status_effect_ticks = 0
+metadata/_custom_type_script = "uid://dh4o07tkvqsri"
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_ftes0"]
+random_pitch = 1.64
+streams_count = 1
+stream_0/stream = ExtResource("3_w11if")
+
+[sub_resource type="Resource" id="Resource_w11if"]
+script = ExtResource("2_ftes0")
+life_time = 2.0
+start_speed = 256.0
+end_speed = 256.0
+accel_time = 0.0
+turn_speed = 0.0
+spin_speed = 0.0
+radius = 3.0
+max_pierces = 0.0
+homes = false
+targets = Array[String](["player"])
+start_home_speed = 360.0
+end_home_speed = 360.0
+home_accel_time = 0.0
+texture = ExtResource("4_74u6o")
+trail_visible = true
+show_indicator = false
+indicator_radius = 12.0
+attack_name = ""
+hitbox_data = SubResource("Resource_71opt")
+sound = SubResource("AudioStreamRandomizer_ftes0")
+color = Color(1, 1, 1, 1)
+metadata/_custom_type_script = "uid://chaqmjsk5oj0x"
+
+[resource]
+script = ExtResource("1_jsb18")
+attack_data = SubResource("Resource_w11if")
+spread = 4.0
+rotation_offset = 0.0
+shots_per_shot = 1
+shots_per_burst = 10
+angle_per_shot = 0.0
+angle_offset = 0.0
+shot_cooldown = 0.2
+burst_cooldown = 0.0
+camera_shake_shake = 5.0
+camera_shake_speed = 15.0
+camera_shake_decay = 15.0
+recoil_strength = 24.0
+stick_to_handler = false
+metadata/_custom_type_script = "uid://dhaneakaic7dm"

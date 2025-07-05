@@ -33,7 +33,6 @@ class RoomNode:
 func _ready() -> void:
 	var grid: Array[RoomNode] = generate_grid()
 	grid_to_room(grid)
-	
 
 func generate_grid() -> Array[RoomNode]:
 	var grid: Array[RoomNode] = []
@@ -104,7 +103,7 @@ func grid_to_room(grid: Array[RoomNode]) -> void:
 		add_child(room)
 	
 	player.global_position = (grid[0].pos * 256.0) + (Vector2.ONE * 128.0)
-	MainCam.global_position = player.global_position
+	#MainCam.global_position = player.global_position
 
 func get_room(pos: Vector2i, rooms: Array[RoomNode]) -> RoomNode:
 	for room: RoomNode in rooms:
