@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://cfw0va3o5kpq6" path="res://room/door/room_door.gd" id="1_67sup"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5ikvo"]
-size = Vector2(12, 48)
+size = Vector2(10, 48)
 
 [sub_resource type="Gradient" id="Gradient_8mtqj"]
 offsets = PackedFloat32Array(0.00645161, 1)
@@ -45,21 +45,30 @@ scale_curve = SubResource("CurveXYZTexture_56vmh")
 color = Color(0, 1, 0, 1)
 color_initial_ramp = SubResource("GradientTexture1D_67sup")
 
-[node name="RoomDoor" type="Area2D"]
+[node name="RoomDoor" type="Area2D" node_paths=PackedStringArray("coll_shape", "suck", "line")]
+collision_mask = 4
 script = ExtResource("1_67sup")
+coll_shape = NodePath("CollisionShape2D")
+suck = NodePath("Suck")
+line = NodePath("Line2D")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(24, 0)
+position = Vector2(15, 0)
 shape = SubResource("RectangleShape2D_5ikvo")
+disabled = true
 
 [node name="Suck" type="GPUParticles2D" parent="."]
-position = Vector2(18, 0)
+position = Vector2(10, 0)
+emitting = false
 amount = 20
 texture = ExtResource("1_8mtqj")
 lifetime = 0.4
 process_material = SubResource("ParticleProcessMaterial_67sup")
 
 [node name="Line2D" type="Line2D" parent="."]
-points = PackedVector2Array(20, -16, 20, 16)
+scale = Vector2(1, 1e-05)
+points = PackedVector2Array(12, -16, 12, 16)
 width = 4.0
 default_color = Color(0, 1, 0, 1)
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

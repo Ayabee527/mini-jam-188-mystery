@@ -11,7 +11,7 @@
 [ext_resource type="Shader" uid="uid://coxwfjo7lomsr" path="res://components/flash.gdshader" id="5_hg6s5"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_qjkh3"]
-bounce = 0.25
+bounce = 1.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8t03j"]
 resource_local_to_scene = true
@@ -27,7 +27,8 @@ shader_parameter/tint = Color(1, 0, 0, 1)
 [sub_resource type="CircleShape2D" id="CircleShape2D_qjkh3"]
 radius = 5.0
 
-[node name="Player" type="RigidBody2D"]
+[node name="Player" type="RigidBody2D" groups=["player"]]
+collision_layer = 6
 physics_material_override = SubResource("PhysicsMaterial_qjkh3")
 gravity_scale = 0.0
 lock_rotation = true

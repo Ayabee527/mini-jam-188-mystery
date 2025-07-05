@@ -38,6 +38,10 @@ folder_colors={
 "res://room/": "green"
 }
 
+[global_group]
+
+player=""
+
 [input]
 
 move_left={

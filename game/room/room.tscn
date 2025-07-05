@@ -1,5 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://d3u0niojn13wa"]
+[gd_scene load_steps=7 format=3 uid="uid://d3u0niojn13wa"]
 
+[ext_resource type="Script" uid="uid://yrbnvr01df20" path="res://room/room.gd" id="1_j33j0"]
 [ext_resource type="PackedScene" uid="uid://jsog86tsfybj" path="res://room/door/room_door.tscn" id="1_ppkfq"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8pnx4"]
@@ -11,12 +12,22 @@ border_width_bottom = 2
 border_color = Color(1, 1, 1, 1)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8pnx4"]
-size = Vector2(18, 256)
+size = Vector2(10, 256)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ppkfq"]
-size = Vector2(256, 18)
+size = Vector2(256, 10)
 
-[node name="Room" type="Node2D"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_j33j0"]
+size = Vector2(220, 220)
+
+[node name="Room" type="Node2D" node_paths=PackedStringArray("cam_holder", "doors", "l_door", "r_door", "u_door", "d_door")]
+script = ExtResource("1_j33j0")
+cam_holder = NodePath("CamHolder")
+doors = [NodePath("Doors/L"), NodePath("Doors/R"), NodePath("Doors/U"), NodePath("Doors/D")]
+l_door = NodePath("Doors/L")
+r_door = NodePath("Doors/R")
+u_door = NodePath("Doors/U")
+d_door = NodePath("Doors/D")
 metadata/_edit_horizontal_guides_ = [128.0]
 metadata/_edit_vertical_guides_ = [128.0]
 
@@ -24,10 +35,10 @@ metadata/_edit_vertical_guides_ = [128.0]
 custom_minimum_size = Vector2(256, 256)
 offset_right = 40.0
 offset_bottom = 40.0
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 16
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
 
 [node name="PanelContainer" type="PanelContainer" parent="MarginContainer"]
 layout_mode = 2
@@ -53,29 +64,42 @@ rotation = 4.71239
 [node name="Walls" type="Node2D" parent="."]
 
 [node name="L" type="StaticBody2D" parent="Walls"]
-position = Vector2(10, 128)
+position = Vector2(6, 127)
 metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/L"]
 shape = SubResource("RectangleShape2D_8pnx4")
 
 [node name="R" type="StaticBody2D" parent="Walls"]
-position = Vector2(246, 128)
+position = Vector2(250, 128)
 metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/R"]
 shape = SubResource("RectangleShape2D_8pnx4")
 
 [node name="U" type="StaticBody2D" parent="Walls"]
-position = Vector2(128, 10)
+position = Vector2(128, 6)
 metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/U"]
 shape = SubResource("RectangleShape2D_ppkfq")
 
 [node name="D" type="StaticBody2D" parent="Walls"]
-position = Vector2(128, 246)
+position = Vector2(127, 250)
 metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/D"]
 shape = SubResource("RectangleShape2D_ppkfq")
+
+[node name="CamHolder" type="Marker2D" parent="."]
+position = Vector2(128, 128)
+
+[node name="Trigger" type="Area2D" parent="."]
+visible = false
+position = Vector2(128, 128)
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Trigger"]
+shape = SubResource("RectangleShape2D_j33j0")
+
+[connection signal="body_entered" from="Trigger" to="." method="_on_trigger_body_entered"]
