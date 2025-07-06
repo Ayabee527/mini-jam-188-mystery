@@ -22,11 +22,11 @@ class RoomNode:
 	func connect_room(dir: Vector2i) -> void:
 		connections.append(dir)
 
-@export var grid_size: Vector2i = Vector2i.ONE * 4
-@export var min_main_path_length: int = 5
-@export var max_main_path_length: int = 9
-@export var min_branch_length: int = 2
-@export var max_branch_length: int = 4
+@export var grid_size: Vector2i = Vector2i.ONE * 5
+@export var min_main_path_length: int = 6
+@export var max_main_path_length: int = 10
+@export var min_branch_length: int = 3
+@export var max_branch_length: int = 5
 
 @export var player: Player
 
@@ -49,6 +49,18 @@ func generate_grid() -> Array[RoomNode]:
 	var main_path: Array[RoomNode] = generate_walk(
 		grid[0], min_main_path_length, max_main_path_length, grid
 	)
+	while main_path.size() < min_main_path_length:
+		grid.clear()
+		start_pos = Vector2i(
+			randi_range(0, grid_size.x - 1),
+			randi_range(0, grid_size.y - 1),
+		)
+		grid.append(
+			RoomNode.new(start_pos)
+		)
+		main_path = generate_walk(
+			grid[0], min_main_path_length, max_main_path_length, grid
+		)
 	
 	main_path.front().type = RoomNode.TYPE.START
 	main_path.back().type = RoomNode.TYPE.EXIT
@@ -86,8 +98,13 @@ func generate_grid() -> Array[RoomNode]:
 			branch_rooms.append_array(branch)
 			branch_count += 1
 	
-	var log_room: RoomNode = branch_rooms.pick_random()
-	log_room.type = RoomNode.TYPE.LOG
+	var log_count = 0
+	while log_count < 5:
+		var room = branch_rooms.pick_random()
+		if room.type != RoomNode.TYPE.LOG:
+			room.type = RoomNode.TYPE.LOG
+			log_count += 1
+		
 	
 	print_rich("[color='red'][b]Branches done!")
 	print("\n")

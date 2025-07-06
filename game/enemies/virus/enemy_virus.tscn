@@ -1,0 +1,96 @@
+[gd_scene load_steps=22 format=3 uid="uid://jukpfqjuj11w"]
+
+[ext_resource type="Script" uid="uid://crlp86gtb4uuw" path="res://components/health/health.gd" id="1_5e15g"]
+[ext_resource type="Script" uid="uid://b4njvt7p72q3b" path="res://enemies/virus/enemy_virus.gd" id="1_u250h"]
+[ext_resource type="Script" uid="uid://4lio7mq7v2gj" path="res://components/states/state_machine.gd" id="3_2m403"]
+[ext_resource type="Script" uid="uid://cybij8vkfpbn3" path="res://enemies/virus/states/shoot.gd" id="4_3038y"]
+[ext_resource type="Script" uid="uid://ddich51mr52s" path="res://enemies/virus/states/die.gd" id="5_bcybr"]
+[ext_resource type="PackedScene" uid="uid://dvvktbgt1ayca" path="res://components/hurtbox/hurtbox.tscn" id="6_hr0ib"]
+[ext_resource type="PackedScene" uid="uid://b0h3spmyp72xm" path="res://components/shadow/shadow.tscn" id="7_tp3jx"]
+[ext_resource type="Shader" uid="uid://dvmhsfr2t0ss2" path="res://components/shadow/shadow.gdshader" id="8_6fgis"]
+[ext_resource type="Texture2D" uid="uid://g7ad07i3tuit" path="res://assets/textures/virus.png" id="9_gamo1"]
+[ext_resource type="PackedScene" uid="uid://ck7giesvc1amw" path="res://components/height_sprite/height_sprite.tscn" id="10_wymar"]
+[ext_resource type="Shader" uid="uid://coxwfjo7lomsr" path="res://components/flash.gdshader" id="11_gl870"]
+[ext_resource type="PackedScene" uid="uid://b1lcu4cgm3hjd" path="res://components/weapon/weapon_handler.tscn" id="12_wymar"]
+[ext_resource type="Script" uid="uid://chdopctyw2ff3" path="res://components/weapon/collision_data/collision_data.gd" id="13_gl870"]
+[ext_resource type="Script" uid="uid://dhaneakaic7dm" path="res://components/weapon/weapon.gd" id="14_pdbcn"]
+[ext_resource type="Resource" uid="uid://c67elq5blhth" path="res://enemies/virus/blaster.tres" id="15_gl870"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_n0wuw"]
+bounce = 1.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_bcybr"]
+radius = 8.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_3ub7u"]
+radius = 12.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pdbcn"]
+resource_local_to_scene = true
+shader = ExtResource("8_6fgis")
+shader_parameter/color = Color(0, 0, 0, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lr6n6"]
+resource_local_to_scene = true
+shader = ExtResource("11_gl870")
+shader_parameter/active = false
+shader_parameter/tint = Color(1, 0, 0, 1)
+
+[sub_resource type="Resource" id="Resource_lr6n6"]
+script = ExtResource("13_gl870")
+collision_layer = 32
+collision_mask = 4
+metadata/_custom_type_script = "uid://chdopctyw2ff3"
+
+[node name="EnemyVirus" type="RigidBody2D" node_paths=PackedStringArray("health")]
+collision_layer = 10
+physics_material_override = SubResource("PhysicsMaterial_n0wuw")
+gravity_scale = 0.0
+lock_rotation = true
+linear_damp = 2.0
+script = ExtResource("1_u250h")
+health = NodePath("Health")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("1_5e15g")
+max_health = 10
+metadata/_custom_type_script = "uid://crlp86gtb4uuw"
+
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
+script = ExtResource("3_2m403")
+initial_state = NodePath("Shoot")
+metadata/_custom_type_script = "uid://4lio7mq7v2gj"
+
+[node name="Shoot" type="Node" parent="StateMachine" node_paths=PackedStringArray("weapon")]
+script = ExtResource("4_3038y")
+weapon = NodePath("../../WeaponHandler")
+
+[node name="Die" type="Node" parent="StateMachine"]
+script = ExtResource("5_bcybr")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_bcybr")
+
+[node name="Hurtbox" parent="." instance=ExtResource("6_hr0ib")]
+knockback_modifier = 0.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("CircleShape2D_3ub7u")
+
+[node name="Shadow" parent="." node_paths=PackedStringArray("caster") instance=ExtResource("7_tp3jx")]
+material = SubResource("ShaderMaterial_pdbcn")
+texture = ExtResource("9_gamo1")
+caster = NodePath("../HeightSprite")
+
+[node name="HeightSprite" parent="." instance=ExtResource("10_wymar")]
+modulate = Color(0.627451, 1, 0, 1)
+material = SubResource("ShaderMaterial_lr6n6")
+texture = ExtResource("9_gamo1")
+
+[node name="WeaponHandler" parent="." instance=ExtResource("12_wymar")]
+collision_data = SubResource("Resource_lr6n6")
+weapons = Array[ExtResource("14_pdbcn")]([ExtResource("15_gl870")])
+
+[connection signal="has_died" from="Health" to="StateMachine/Die" method="_on_health_has_died"]
+[connection signal="hurt" from="Hurtbox" to="." method="_on_hurtbox_hurt"]
+[connection signal="knocked_back" from="Hurtbox" to="." method="_on_hurtbox_knocked_back"]

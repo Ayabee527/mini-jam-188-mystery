@@ -14,7 +14,12 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 		tp = Vector2.INF
 
 func _physics_process(delta: float) -> void:
-	weapon.look_at(get_global_mouse_position())
+	var new_transform := global_transform.looking_at(get_global_mouse_position())
+	global_transform = global_transform.interpolate_with(
+		new_transform, 14.0 * delta
+	)
+	
+	#weapon.look_at(get_global_mouse_position())
 	if Input.is_action_just_pressed("shoot"):
 		weapon.firing = true
 	if Input.is_action_just_released("shoot"):

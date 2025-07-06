@@ -1,7 +1,7 @@
 extends EnemyBugState
 
 @export var turn_speed: float = 3.0
-@export var ram_speed: float = 500.0
+@export var ram_speed: float = 400.0
 @export var stun_timer: Timer
 @export var weapon: WeaponHandler
 

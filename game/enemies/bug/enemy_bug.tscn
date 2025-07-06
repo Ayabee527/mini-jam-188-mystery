@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://bobf4k7bh1iyg"]
+[gd_scene load_steps=30 format=3 uid="uid://bobf4k7bh1iyg"]
 
 [ext_resource type="Script" uid="uid://broy3v2stol0h" path="res://enemies/bug/enemy_bug.gd" id="1_2ry7h"]
 [ext_resource type="Script" uid="uid://crlp86gtb4uuw" path="res://components/health/health.gd" id="2_a4xbe"]
@@ -12,6 +12,11 @@
 [ext_resource type="PackedScene" uid="uid://dvvktbgt1ayca" path="res://components/hurtbox/hurtbox.tscn" id="8_unbbi"]
 [ext_resource type="PackedScene" uid="uid://b1lcu4cgm3hjd" path="res://components/weapon/weapon_handler.tscn" id="9_a4xbe"]
 [ext_resource type="PackedScene" uid="uid://bd83v7x2q3o7f" path="res://components/hitbox/hitbox.tscn" id="9_fdri0"]
+[ext_resource type="PackedScene" uid="uid://b0h3spmyp72xm" path="res://components/shadow/shadow.tscn" id="12_1ke1o"]
+[ext_resource type="Shader" uid="uid://dvmhsfr2t0ss2" path="res://components/shadow/shadow.gdshader" id="13_w4wuo"]
+[ext_resource type="PackedScene" uid="uid://ck7giesvc1amw" path="res://components/height_sprite/height_sprite.tscn" id="14_kecs0"]
+[ext_resource type="Texture2D" uid="uid://dmpykiijk3kes" path="res://assets/textures/bug.png" id="14_w4wuo"]
+[ext_resource type="Shader" uid="uid://coxwfjo7lomsr" path="res://components/flash.gdshader" id="15_dy0jr"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_260km"]
 bounce = 1.0
@@ -19,44 +24,10 @@ bounce = 1.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_260km"]
 radius = 8.0
 
-[sub_resource type="Animation" id="Animation_2ry7h"]
-resource_name = "speen"
-length = 2.0
-loop_mode = 1
-step = 0.1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 2),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [0.0, 6.28319]
-}
-
-[sub_resource type="Animation" id="Animation_go0d6"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_ll76g"]
-_data = {
-&"RESET": SubResource("Animation_go0d6"),
-&"speen": SubResource("Animation_2ry7h")
-}
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cb542"]
+resource_local_to_scene = true
+shader = ExtResource("13_w4wuo")
+shader_parameter/color = Color(0, 0, 0, 1)
 
 [sub_resource type="Gradient" id="Gradient_260km"]
 colors = PackedColorArray(0.355314, 0.355314, 0.355314, 1, 1, 1, 1, 1)
@@ -84,6 +55,12 @@ scale_max = 4.0
 scale_curve = SubResource("CurveTexture_ll76g")
 color = Color(0, 1, 0, 1)
 color_initial_ramp = SubResource("GradientTexture1D_2ry7h")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ek6ex"]
+resource_local_to_scene = true
+shader = ExtResource("15_dy0jr")
+shader_parameter/active = false
+shader_parameter/tint = Color(1, 0, 0, 1)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_fdri0"]
 radius = 12.0
@@ -131,22 +108,23 @@ script = ExtResource("4_a4xbe")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_260km")
 
-[node name="Polygon2D" type="Polygon2D" parent="."]
-color = Color(0, 1, 0, 1)
-polygon = PackedVector2Array(6, 3, 6, -3, 1, -1, 3, -6, -3, -6, -1, -1, -6, -3, -6, 3, -1, 1, -4, 6, 3, 6, 1, 1)
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Polygon2D"]
-libraries = {
-&"": SubResource("AnimationLibrary_ll76g")
-}
-autoplay = "speen"
-
-[node name="Trail" parent="Polygon2D" instance=ExtResource("2_go0d6")]
-default_color = Color(0, 1, 0, 1)
+[node name="Shadow" parent="." node_paths=PackedStringArray("caster") instance=ExtResource("12_1ke1o")]
+material = SubResource("ShaderMaterial_cb542")
+texture = ExtResource("14_w4wuo")
+caster = NodePath("../HeightSprite")
 
 [node name="Bugs" type="GPUParticles2D" parent="."]
 amount = 80
 process_material = SubResource("ParticleProcessMaterial_u8cwc")
+
+[node name="Trail" parent="." instance=ExtResource("2_go0d6")]
+width = 5.0
+default_color = Color(0, 1, 0, 1)
+
+[node name="HeightSprite" parent="." instance=ExtResource("14_kecs0")]
+modulate = Color(0, 1, 0, 1)
+material = SubResource("ShaderMaterial_ek6ex")
+texture = ExtResource("14_w4wuo")
 
 [node name="Hurtbox" parent="." instance=ExtResource("8_unbbi")]
 

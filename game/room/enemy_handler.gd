@@ -5,14 +5,18 @@ signal enemy_killed(enemy: Node2D)
 signal wave_cleared()
 
 const SPAWN = preload("res://room/spawn.tscn")
+
 const BUG = preload("res://enemies/bug/enemy_bug.tscn")
+const VIRUS = preload("res://enemies/virus/enemy_virus.tscn")
 
 const ENEMIES = {
-	"BUG": BUG
+	"BUG": BUG,
+	"VIRUS": VIRUS
 }
 
 const COSTS = {
 	"BUG": 2,
+	"VIRUS": 3
 }
 
 @export var extra_spend: int = 2
